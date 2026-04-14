@@ -70,7 +70,7 @@ class LoginView(APIView):
             return Response({
                 'user':   LoginResponseSerializer(user).data,
                 'tokens': tokens,
-            })
+            }, status=status.HTTP_200_OK)
 
         return Response(
             {'error': 'Invalid username or password'},
