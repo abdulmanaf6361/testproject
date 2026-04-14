@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import Test, User
 
 # ── 2. Register serializer (for creating a new user) ──────
 class RegisterSerializer(serializers.ModelSerializer):
@@ -38,3 +38,17 @@ class LoginResponseSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'role']
+
+
+class CreateTestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Test
+        fields = ['title', 'time_limit']
+
+
+class ListTestSerializer(serializers.ModelSerializer):
+    created_by = serializers.CharField(source='created_by.username')
+
+    class Meta:
+        model = Test
+        fields = ['id', 'title', 'created_by', 'time_limit', 'is_published', 'created_at']
