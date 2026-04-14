@@ -92,4 +92,4 @@ class CreateTestView(APIView):
         # List all tests created by the teacher
         tests = request.user.created_tests.all()
         serializer = ListTestSerializer(tests, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
