@@ -6,7 +6,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from testapp.permissions import IsTeacher
-from .serializers import LoginSerializer, RegisterSerializer, UserSerializer
+from .serializers import CreateQuestionSerializer, LoginSerializer, RegisterSerializer, UserSerializer
 
 # ── Helper: generate tokens for a user ────────────────────
 def get_tokens_for_user(user):
@@ -93,3 +93,12 @@ class CreateTestView(APIView):
         tests = request.user.created_tests.all()
         serializer = ListTestSerializer(tests, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class QuestionView(APIView):
+    permission_classes = [IsTeacher]
+    def post(self, request):
+        serializer = CreateQuestionSerializer(data=request.data)
+        if serializer.is_valid():
+            question = serializer.save()
+            return Response({'message': 'Question created successfully', 'question_id': question.id}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
