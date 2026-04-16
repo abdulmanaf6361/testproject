@@ -102,3 +102,37 @@ class QuestionView(APIView):
             question = serializer.save()
             return Response({'message': 'Question created successfully', 'question_id': question.id}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
+
+
+
+
+###############################################################################################
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+
+from .serializers import UploadTestCSVSerializer
+
+
+class UploadTestCSVView(APIView):
+    permission_classes = [IsTeacher]
+
+    def post(self, request):
+        serializer = UploadTestCSVSerializer(
+            data=request.data,
+            context={"request": request}
+        )
+
+        if serializer.is_valid():
+            test = serializer.save()
+
+            return Response({
+                "message": "Test created successfully",
+                "test_id": test.id
+            }, status=201)
+
+        return Response(serializer.errors, status=400)
