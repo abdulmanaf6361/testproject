@@ -102,6 +102,23 @@ class QuestionView(APIView):
             question = serializer.save()
             return Response({'message': 'Question created successfully', 'question_id': question.id}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+from .models import Test
+from .serializers import TestIdSerializer, ListQuestionSerializer
+class ListQuestionsofATestView(APIView):
+    permission_classes = [IsTeacher]
+    def post(self, request):
+        test = TestIdSerializer(data=request.data)
+        if test.is_valid():
+            questions = Test.objects.get(id=test.validated_data['test']).questions.all()
+            serializer = ListQuestionSerializer(questions, many=True)
+            return Response(
+                {
+                    "Message": "Questions fetched sucessfully",
+                    "Questions of the test": serializer.data
+                }, 
+                 status=status.HTTP_200_OK)
+        return Response(test.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 
@@ -136,3 +153,13 @@ class UploadTestCSVView(APIView):
             }, status=201)
 
         return Response(serializer.errors, status=400)
+
+class GetFullNameView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        print(request.user)
+        print(type(request.user))
+        user = request.user
+        full_name = f"{user.first_name} {user.last_name}"
+        return Response({"full_name": full_name}, status=200)

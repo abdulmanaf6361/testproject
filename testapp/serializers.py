@@ -200,3 +200,11 @@ class UploadTestCSVSerializer(serializers.Serializer):
 
         return test
     
+
+class TestIdSerializer(serializers.Serializer):
+    test = serializers.IntegerField()
+
+class ListQuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = ['id', 'text', 'question_type', 'marks']
